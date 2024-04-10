@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import ImageInput from './imgxoaanh';
+import ImageInput from './imgthemanh';
 
 const ProductForm = () => {
   const [productData, setProductData] = useState({
+    coverImage: null,
     images: [],
     productName: '',
     category: '',
     description: '',
   });
 
+  const [coverImagePreview, setCoverImagePreview] = useState('');
   const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleChange = (e) => {
@@ -16,11 +18,25 @@ const ProductForm = () => {
     setProductData({ ...productData, [name]: value });
   };
 
+  const handleCoverImageChange = (e) => {
+    const file = e.target.files[0];
+    const imageUrl = URL.createObjectURL(file);
+    setProductData({ ...productData, coverImage: file });
+    setCoverImagePreview(imageUrl);
+  };
+
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const imageUrls = files.map(file => URL.createObjectURL(file));
-    setProductData({ ...productData, images: files });
+    const remainingSlots = 6 - imagePreviews.length;
+    const selectedImages = files.slice(0, remainingSlots);
+    const imageUrls = selectedImages.map(file => URL.createObjectURL(file));
     setImagePreviews([...imagePreviews, ...imageUrls]);
+    setProductData({ ...productData, images: [...productData.images, ...selectedImages] });
+  };
+
+  const handleRemoveCoverImage = () => {
+    setProductData({ ...productData, coverImage: null });
+    setCoverImagePreview('');
   };
 
   const handleRemoveImage = (index) => {
@@ -35,8 +51,9 @@ const ProductForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(productData);
-    // setProductData({ images: [], productName: '', category: '', description: '' });
-    // Reset image previews
+    // Reset form after submit
+    setProductData({ coverImage: null, images: [], productName: '', category: '', description: '' });
+    setCoverImagePreview('');
     setImagePreviews([]);
   };
 
@@ -45,24 +62,38 @@ const ProductForm = () => {
       <h2>Thêm Sản Phẩm</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="image" className="form-label">Hình Ảnh:</label>
-          {imagePreviews.map((imageUrl, index) => (
+          <label htmlFor="coverImage" className="form-label">Ảnh Bìa:</label>
+          {coverImagePreview && (
+            <div className="mb-3">
+              <img src={coverImagePreview} alt="Cover Preview" style={{ maxWidth: '200px', marginBottom: '10px' }} />
+              <button type="button" className="btn btn-danger m-1" onClick={handleRemoveCoverImage}>Xóa Ảnh Bìa</button>
+            </div>
+          )}
+          {!coverImagePreview && (
             <ImageInput
-              key={index}
-              imagePreview={imageUrl}
-              onChange={handleImageChange}
-              onRemove={() => handleRemoveImage(index)}
+              onChange={handleCoverImageChange}
+              multiple={false}
             />
-          ))}
-          <input
-            type="file"
-            className="form-control"
-            id="image"
-            name="image"
-            accept="image/*"
-            multiple
-            onChange={handleImageChange}
-          />
+          )}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="images" className="form-label">Hình Ảnh Khác:</label>
+          <div className='d-flex flex-wrap'>
+            {imagePreviews.map((imageUrl, index) => (
+              <div key={index} className="mb-3 d-flex justify-content-center align-items-center flex-column mx-1">
+                <img src={imageUrl} alt={`Product Image ${index}`} className="img-fluid" style={{ maxWidth: '200px', minHeight: '100px', maxHeight: "100px", marginBottom: '10px' }} />
+                <button type="button" className="btn  btn-danger btn-sm" onClick={() => handleRemoveImage(index)}>Xóa Ảnh</button>
+              </div>
+            ))}
+            {imagePreviews.length < 6 && (
+              <div className='d-flex justify-content-center align-items-center'>
+                <ImageInput
+                  onChange={handleImageChange}
+                  multiple={true}
+                />
+              </div>
+            )}
+          </div>
         </div>
         <div className="mb-3">
           <label htmlFor="productName" className="form-label">Tên Sản Phẩm:</label>
