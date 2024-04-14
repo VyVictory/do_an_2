@@ -8,6 +8,9 @@ export class User extends Document{
     @Prop()
     name: string;
     
+
+    // @Prop()
+    // email: string;
     @Prop({unique: [ true, 'duplicate email enter' ]})
     email: string;
     

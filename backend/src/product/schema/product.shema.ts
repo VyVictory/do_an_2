@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { User } from "../../auth/schemas/user.schema";
-import mongoose, { mongo } from "mongoose";
-import {ProductType} from "../product_type/product-type.schema"
+import mongoose, { ObjectId, mongo } from "mongoose";
+import {ProductType} from "../../product_type/product-type.schema"
 
 /*
 export enum Loai {
@@ -26,10 +26,13 @@ export class Product {
     mota: string;
 
     @Prop()
-    soluong:number
+    soluong:number;
+
+    @Prop()
+    hinh:string;
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref:'ProductType'})
-    loai: ProductType;
+    loai: ObjectId;
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref:'User'})
     user: User;

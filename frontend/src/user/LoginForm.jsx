@@ -23,9 +23,10 @@ function LoginForm({ onClose, onR }) {
       // Đóng form sau khi đăng nhập thành công
       setTimeout(() => {
         onClose();
-      }, 2000);
+        window.location.href = '/';
+      }, 1000);
     } catch (error) {
-      if (error.response) {
+      if (error.response) { 
         // Xử lý lỗi từ server
         setMessage('Tài Khoản Hoặc Mật Khẩu Không Chính Xác.');
       } else {

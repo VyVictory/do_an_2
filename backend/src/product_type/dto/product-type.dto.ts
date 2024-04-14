@@ -1,3 +1,6 @@
+
+
+
 export class CreateProductTypeDto {
     tenloai: string;
     hangloai: number;

@@ -8,9 +8,8 @@ import { UserModule } from './user/user.module';
 import { AuthMiddleware } from './user/midđlewares/auth.middleware';
 //import { CartModule } from './cart/cart.module';
 import { AuthModule } from './auth/auth.module';
-import { ProductTypeModule } from './product/product_type/product-type.module';
-
-
+import { ProductTypeModule } from './product_type/product-type.module';
+import { UploadModule } from './upload/upload.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +20,7 @@ import { ProductTypeModule } from './product/product_type/product-type.module';
     ProductModule,
     ProductTypeModule,
     UserModule,
+    UploadModule,
    // CartModule,
     AuthModule
   ],

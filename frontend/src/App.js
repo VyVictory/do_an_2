@@ -11,24 +11,12 @@ function App() {
 nts/content */}
       <div className="container">
 
-        <h1>Welcome to My React App</h1>
-        <p>This is a simple example of a Bootstrap Navbar in React.</p>
+        <h1>Welcome to My Shop</h1>
       </div>
-      
+
       <header className="App-header">
-        <Event/>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Event />
+        
       </header>
     </div>
   );

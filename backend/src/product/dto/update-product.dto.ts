@@ -1,7 +1,8 @@
 
 import { IsEmpty, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
-import { ProductType } from "../product_type/product-type.schema";
-import { User } from "../..//auth/schemas/user.schema";
+import { ProductType } from "../../product_type/product-type.schema";
+import { User } from "../../auth/schemas/user.schema";
+import { ObjectId } from "mongoose";
 
 
 export class UpdateProductDto{
@@ -23,9 +24,13 @@ export class UpdateProductDto{
     @IsNumber()
     readonly soluong: number
 
+    @IsOptional()
+    @IsString()
+    readonly hinh: string
+
 
     @IsEmpty({message: 'please enter correct loai'})
-    readonly loai: ProductType;
+    readonly loai: ObjectId;
 
     @IsEmpty({ message: 'use cannot post user id' })
     readonly user: User;

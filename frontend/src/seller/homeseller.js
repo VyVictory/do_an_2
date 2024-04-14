@@ -12,7 +12,9 @@ const Homeseller = () => {
 
     return (
         <div className="" style={{  }}>
-                aaaaa
+                <div className='container'>
+thống kê
+                </div>
         </div>
     );
 }

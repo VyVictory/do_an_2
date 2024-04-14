@@ -21,7 +21,6 @@
     
 }
 .barcontainer{
-  border-bottom: solid 1px;
 }
 .logo{
   height: 100%;
@@ -78,7 +77,7 @@
   height: 40px;
   width: 100%;
   background-color: white;
-  border-radius: 20px;
+  border-radius: 5px;
 }
 .listaccount:hover {
   background-color:  gainsboro; /* Màu nền khi hover */

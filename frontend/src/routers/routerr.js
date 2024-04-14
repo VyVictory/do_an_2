@@ -6,7 +6,8 @@ import Sellerbar from '../seller/sellerbar'
 import Sellercenter from '../seller/sellercenter';
 import App from '../App'
 import Themsanpham from '../seller/themsanpham';
-
+import Themanh from '../seller/yourcontainer'
+import Home from '../user/Home'
 function Routerr() {
     const [showNavbar, setShowNavbar] = useState(true);
 
@@ -32,9 +33,10 @@ function Routerr() {
                
                 <div className="page-container">
                     <Routes>
-                        <Route path="/" element={<App />} />
-                        <Route path="/kenhnguoiban/sanpham/themsanpham" element={<Themsanpham />} />
+                        <Route path="/" element={<Home />} />
 
+                        <Route path="/kenhnguoiban/sanpham/themsanpham" element={<Themsanpham />} />
+                        <Route path="/kenhnguoiban/sanpham/themanh" element={<Themanh />} />
                     </Routes>
                 </div>
             </Router>

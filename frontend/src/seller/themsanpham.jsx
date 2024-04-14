@@ -1,44 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageInput from './imgthemanh';
+import axios from 'axios';
 
 const ProductForm = () => {
   const [productData, setProductData] = useState({
     coverImage: null,
     images: [],
-    productName: '',
-    category: '',
-    description: '',
   });
-
+  const [ten, setTen] = useState('');
+  const [gia, setGia] = useState('');
+  const [mota, setMota] = useState('');
+  const [soluong, setSoluong] = useState('');
+  const [loai, setLoai] = useState('661b85a4f0a27cb78fa93a5d');
   const [coverImagePreview, setCoverImagePreview] = useState('');
   const [imagePreviews, setImagePreviews] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProductData({ ...productData, [name]: value });
-  };
+  const [savedImagePath, setSavedImagePath] = useState('');
+  const [img, setImg] = useState(null);
 
   const handleCoverImageChange = (e) => {
     const file = e.target.files[0];
+    setImg(file);
+    // Tạo chuỗi thời gian hiện tại
+    const currentDate = new Date();
+    const timestamp = currentDate.getTime(); // Lấy timestamp để đảm bảo tên file là duy nhất
+    // Tạo tên file mới với timestamp
+    const newFileName = `cover_${timestamp}_${file.name}`;
     const imageUrl = URL.createObjectURL(file);
     setProductData({ ...productData, coverImage: file });
     setCoverImagePreview(imageUrl);
+    // Lưu đường dẫn vào state
+    setSavedImagePath(newFileName); // Giả sử bạn có useState('') là savedImagePath
   };
+  const handleRemoveCoverImage = () => {
+    setProductData({ ...productData, coverImage: null });
+    setCoverImagePreview('');
+    setSavedImagePath(''); // Đặt lại savedImagePath khi xóa ảnh
+  };
+
+
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const remainingSlots = 6 - imagePreviews.length;
     const selectedImages = files.slice(0, remainingSlots);
-    const imageUrls = selectedImages.map(file => URL.createObjectURL(file));
+    const imageUrls = selectedImages.map((file) => URL.createObjectURL(file));
     setImagePreviews([...imagePreviews, ...imageUrls]);
     setProductData({ ...productData, images: [...productData.images, ...selectedImages] });
   };
-
-  const handleRemoveCoverImage = () => {
-    setProductData({ ...productData, coverImage: null });
-    setCoverImagePreview('');
-  };
-
   const handleRemoveImage = (index) => {
     const updatedImages = [...productData.images];
     const updatedPreviews = [...imagePreviews];
@@ -48,15 +57,76 @@ const ProductForm = () => {
     setImagePreviews(updatedPreviews);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(productData);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post('http://localhost:3000/product', {
+        ten: ten,
+        gia: +gia,
+        mota: mota,
+        soluong: +soluong,
+        hinh: savedImagePath,
+        loai: loai,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        alert('Thêm sản phẩm thành công');
+      } else {
+        alert('Thêm sản phẩm thất bại');
+      }
+      if (img) {
+        const formData = new FormData();
+        formData.append('file', img, savedImagePath);
+
+        const response = await fetch('http://localhost:3000/upload', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error('Cover image upload failed');
+        }
+
+        const responseData = await response.json();
+        setSavedImagePath(responseData.filePath);
+      }
+      // Handle response if needed
+      console.log('Product created:', response.data);
+
+    } catch (error) {
+      // Handle errors
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Server responded with an error:', error.response.data);
+        console.error('Status code:', error.response.status);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received from server:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error setting up the request:', error.message);
+      }
+    }
+
     // Reset form after submit
-    setProductData({ coverImage: null, images: [], productName: '', category: '', description: '' });
+    setTen('');
+    setGia('');
+    setMota('');
+    setSoluong('');
+    setLoai('661b85a4f0a27cb78fa93a5d');
+    setProductData({ coverImage: null, images: [] });
     setCoverImagePreview('');
     setImagePreviews([]);
   };
-
   return (
     <div className="container mt-5">
       <h2>Thêm Sản Phẩm</h2>
@@ -100,11 +170,29 @@ const ProductForm = () => {
           <input
             type="text"
             className="form-control"
-            id="productName"
-            name="productName"
-            value={productData.productName}
-            onChange={handleChange}
             placeholder="Tên Sản Phẩm"
+            value={ten}
+            onChange={(e) => setTen(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="gia" className="form-label">Giá:</label>
+          <input
+            type="number"
+            className="form-control"
+            value={gia}
+            onChange={(e) => setGia(e.target.value)}
+            placeholder="Giá Sản Phẩm"
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="soluong" className="form-label">Số lượng:</label>
+          <input
+            type="number"
+            className="form-control"
+            value={soluong}
+            onChange={(e) => setSoluong(e.target.value)}
+            placeholder="Số Lượng Sản Phẩm"
           />
         </div>
         <div className="mb-3">
@@ -113,11 +201,10 @@ const ProductForm = () => {
             className="form-select"
             id="category"
             name="category"
-            value={productData.category}
-            onChange={handleChange}
+            value={loai}
+            onChange={(e) => setLoai(e.target.value)}
           >
-            <option value="">Chọn Ngành Hàng</option>
-            <option value="electronics">Điện Tử</option>
+            <option value="661b85a4f0a27cb78fa93a5d">Điện Tử</option>
             <option value="clothing">Thời Trang</option>
             <option value="books">Sách</option>
           </select>
@@ -126,10 +213,8 @@ const ProductForm = () => {
           <label htmlFor="description" className="form-label">Mô Tả Sản Phẩm:</label>
           <textarea
             className="form-control"
-            id="description"
-            name="description"
-            value={productData.description}
-            onChange={handleChange}
+            value={mota}
+            onChange={(e) => setMota(e.target.value)}
             placeholder="Mô Tả Sản Phẩm"
           />
         </div>
