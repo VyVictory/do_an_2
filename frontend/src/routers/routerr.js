@@ -8,6 +8,8 @@ import App from '../App'
 import Themsanpham from '../seller/themsanpham';
 import Themanh from '../seller/yourcontainer'
 import Home from '../user/Home'
+import Xemchitiet from '../user/xemchitiet';
+
 function Routerr() {
     const [showNavbar, setShowNavbar] = useState(true);
 
@@ -37,6 +39,7 @@ function Routerr() {
 
                         <Route path="/kenhnguoiban/sanpham/themsanpham" element={<Themsanpham />} />
                         <Route path="/kenhnguoiban/sanpham/themanh" element={<Themanh />} />
+                        <Route path="/xemchitiet" element={<Xemchitiet />} />
                     </Routes>
                 </div>
             </Router>

@@ -15,6 +15,15 @@ export class ProductController {
     async getAllProducts(): Promise<Product[]>{
         return this.productService.findAll();
     }
+    
+    @Get(':id') // Specify the route parameter ':id'
+    async getProduct(
+        @Param('id')
+        id: string
+    ): Promise<Product> {
+        return this.productService.findById(id);
+    }
+    
 
     @Post()
     @UseGuards(AuthGuard())
@@ -24,14 +33,6 @@ export class ProductController {
         @Req() req,
     ): Promise<Product> {
         return this.productService.create(product, req.user);
-    }
-
-    @Get()
-    async getProduct(
-        @Param('id')
-        id: string
-    ): Promise<Product> {
-        return this.productService.findById(id);
     }
 
     @Put()

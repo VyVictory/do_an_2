@@ -26,7 +26,7 @@ function Event() {
       )}
 
       {showEvent2 && (
-        <div>
+        <div >
           <h1>Event 2</h1>
           {/* Nội dung của Event 2 */}
         </div>
